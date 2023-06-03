@@ -4,8 +4,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/simapp"
+	"github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/cosmos/cosmos-sdk/x/slashing"
+	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/spf13/cobra"
 )
 
@@ -16,9 +20,10 @@ type Params struct {
 }
 
 func Execute(configPath string) {
+	// Load application configuration using 'config.go'
 	appConfig, err := LoadConfig(configPath)
 	if err != nil {
-		GetDefaultLogger().Fatal().Err(err).Msg("Could not load config")
+		GetDefaultLogger().Fatal().Err(err).Msg("Could not load configuration from specified configuration path !")
 	}
 
 	appConfig.Validate()        // will exit if not valid
@@ -33,14 +38,17 @@ func Execute(configPath string) {
 		log.Info().
 			Strs("validators", appConfig.IncludeValidators).
 			Msg("Monitoring specific validators")
-	} else {
+	} else if len(appConfig.ExcludeValidators) != 0 {
 		log.Info().
 			Strs("validators", appConfig.ExcludeValidators).
 			Msg("Monitoring all validators except specific")
+	} else {
+		log.Info().Msg("Not monitoring validators")
 	}
 
-	encCfg := simapp.MakeTestEncodingConfig()
-	interfaceRegistry := encCfg.InterfaceRegistry
+	interfaceRegistry := types.NewInterfaceRegistry()
+	mb := module.NewBasicManager(slashing.AppModuleBasic{}, staking.AppModuleBasic{}, auth.AppModuleBasic{})
+	mb.RegisterInterfaces(interfaceRegistry)
 
 	rpc := NewTendermintRPC(appConfig.NodeConfig, log)
 	grpc := NewTendermintGRPC(appConfig.NodeConfig, interfaceRegistry, appConfig.QueryEachSigningInfo, log)
@@ -116,8 +124,8 @@ func main() {
 	var ConfigPath string
 
 	rootCmd := &cobra.Command{
-		Use:  "tendermint-exporter",
-		Long: "Scrape the data on Tendermint node.",
+		Use:  "scrape",
+		Long: "Scrape the data on an FxCore or PundiX validator node.",
 		Run: func(cmd *cobra.Command, args []string) {
 			Execute(ConfigPath)
 		},

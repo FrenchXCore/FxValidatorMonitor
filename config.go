@@ -9,6 +9,31 @@ import (
 	"github.com/mcuadros/go-defaults"
 )
 
+type AppConfig struct {
+	LogConfig        LogConfig        `toml:"log"`
+	ChainInfoConfig  ChainInfoConfig  `toml:"chain-info"`
+	GovernanceConfig GovernanceConfig `toml:"governance"`
+	ValidatorsConfig ValidatorsConfig `toml:"validators"`
+	NodeConfig       NodeConfig       `toml:"node"`
+
+	QueryEachSigningInfo bool `toml:"query-each-signing-info"`
+	Interval             int  `toml:"interval" default:"120"`
+
+	Prefix                    string `toml:"bech-prefix"`
+	ValidatorPrefix           string `toml:"bech-validator-prefix"`
+	ValidatorPubkeyPrefix     string `toml:"bech-validator-pubkey-prefix"`
+	ConsensusNodePrefix       string `toml:"bech-consensus-node-prefix"`
+	ConsensusNodePubkeyPrefix string `toml:"bech-consensus-node-pubkey-prefix"`
+
+	IncludeValidators []string `toml:"include-validators"`
+	ExcludeValidators []string `toml:"exclude-validators"`
+
+	MissedBlocksGroups MissedBlocksGroups `toml:"missed-blocks-groups"`
+
+	TelegramConfig TelegramAppConfig `toml:"telegram"`
+	SlackConfig    SlackConfig       `toml:"slack"`
+}
+
 type TelegramAppConfig struct {
 	Token      string `toml:"token"`
 	Chat       int    `toml:"chat"`
@@ -26,8 +51,10 @@ type LogConfig struct {
 }
 
 type ChainInfoConfig struct {
-	MintscanPrefix       string `toml:"mintscan-prefix"`
-	ValidatorPagePattern string `toml:"validator-page-pattern"`
+	MintscanPrefix            string `toml:"mintscan-prefix"`
+	ValidatorPagePattern      string `toml:"validator-page-pattern"`
+	TransactionPagePattern    string `toml:"transaction-page-pattern"`
+	EvmTransactionPagePattern string `toml:"evm-transaction-page-pattern"`
 }
 
 func (c *ChainInfoConfig) GetValidatorPage(address string, text string) string {
@@ -50,27 +77,24 @@ type NodeConfig struct {
 	TendermintRPC string `toml:"rpc-address" default:"http://localhost:26657"`
 }
 
-type AppConfig struct {
-	LogConfig       LogConfig       `toml:"log"`
-	ChainInfoConfig ChainInfoConfig `toml:"chain-info"`
-	NodeConfig      NodeConfig      `toml:"node"`
+type GovernanceConfig struct {
+	NewProposal    bool `toml:"new-proposal"`
+	VotingOpened   bool `toml:"voting-opened"`
+	QuorumReached  bool `toml:"quorum-reached"`
+	ClosedProposal bool `toml:"closed-proposal"`
+}
 
-	QueryEachSigningInfo bool `toml:"query-each-signing-info"`
-	Interval             int  `toml:"interval" default:"120"`
-
-	Prefix                    string `toml:"bech-prefix"`
-	ValidatorPrefix           string `toml:"bech-validator-prefix"`
-	ValidatorPubkeyPrefix     string `toml:"bech-validator-pubkey-prefix"`
-	ConsensusNodePrefix       string `toml:"bech-consensus-node-prefix"`
-	ConsensusNodePubkeyPrefix string `toml:"bech-consensus-node-pubkey-prefix"`
-
-	IncludeValidators []string `toml:"include-validators"`
-	ExcludeValidators []string `toml:"exclude-validators"`
-
-	MissedBlocksGroups MissedBlocksGroups `toml:"missed-blocks-groups"`
-
-	TelegramConfig TelegramAppConfig `toml:"telegram"`
-	SlackConfig    SlackConfig       `toml:"slack"`
+type ValidatorsConfig struct {
+	Active           bool   `toml:"new-proposal"`
+	Inactive         bool   `toml:"voting-opened"`
+	Jailed           bool   `toml:"quorum-reached"`
+	Tombstoned       bool   `toml:"tombstoned"`
+	ListSize         bool   `toml:"list-size"`
+	SelfStake        bool   `toml:"self-stake"`
+	NewVote          bool   `toml:"new-vote"`
+	DelegationChange bool   `toml:"delegation-change"`
+	DelegationDiff   uint64 `toml:"delegation-diff"`
+	CommissionChange bool   `toml:"commission-change"`
 }
 
 type MissedBlocksGroup struct {

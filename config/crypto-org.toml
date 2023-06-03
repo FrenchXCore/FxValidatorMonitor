@@ -1,5 +1,0 @@
-bech-consensus-node-prefix = "crocnclcons"
-bech-validator-prefix = "crocncl"
-bech-consensus-node-pubkey-prefix = "crocnclconspub"
-bech-validator-pubkey-prefix = "crocnclpub"
-mintscan-prefix = "crypro-org"

@@ -35,7 +35,7 @@ func (rpc *TendermintRPC) GetAvgBlockTime() float64 {
 }
 
 func (rpc *TendermintRPC) GetBlock(height *int64) *ctypes.Block {
-	client, err := tmrpc.New(rpc.NodeConfig.TendermintRPC, "/websocket")
+	client, err := tmrpc.New(rpc.NodeConfig.TendermintRPC + "/websocket")
 	if err != nil {
 		rpc.Logger.Fatal().Err(err).Msg("Could not create Tendermint client")
 	}

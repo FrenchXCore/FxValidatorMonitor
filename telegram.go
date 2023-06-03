@@ -58,7 +58,7 @@ func NewTelegramReporter(
 
 func (i *NotificationInfo) addNotifier(notifier string) error {
 	if stringInSlice(notifier, i.Notifiers) {
-		return fmt.Errorf("You are already subscribed to this validator's notifications.") //nolint
+		return fmt.Errorf("you are already subscribed to this validator's notifications")
 	}
 
 	i.Notifiers = append(i.Notifiers, notifier)
@@ -67,7 +67,7 @@ func (i *NotificationInfo) addNotifier(notifier string) error {
 
 func (i *NotificationInfo) removeNotifier(notifier string) error {
 	if !stringInSlice(notifier, i.Notifiers) {
-		return fmt.Errorf("You are not subscribed to this validator's notifications.") //nolint
+		return fmt.Errorf("you are not subscribed to this validator's notifications")
 	}
 
 	i.Notifiers = removeFromSlice(i.Notifiers, notifier)
@@ -104,7 +104,7 @@ func (c *TelegramConfig) removeNotifier(validatorAddress string, notifierToAdd s
 		}
 	}
 
-	return fmt.Errorf("You are not subscribed to this validator's notifications.") //nolint
+	return fmt.Errorf("you are not subscribed to this validator's notifications")
 }
 
 func (c *TelegramConfig) getNotifiersSerialized(address string) string {
@@ -251,7 +251,7 @@ func (r TelegramReporter) sendMessage(message *tb.Message, text string) {
 
 func (r TelegramReporter) getHelp(message *tb.Message) {
 	var sb strings.Builder
-	sb.WriteString("<strong>missed-block-checker</strong>\n\n")
+	sb.WriteString("<strong>fx-validators-monitor</strong>\n\n")
 	sb.WriteString(fmt.Sprintf("Query for the %s network info.\n", r.ChainInfoConfig.MintscanPrefix))
 	sb.WriteString("Can understand the following commands:\n")
 	sb.WriteString("- /subscribe &lt;validator address&gt; - be notified on validator's missed block in a Telegram channel\n")
@@ -263,13 +263,9 @@ func (r TelegramReporter) getHelp(message *tb.Message) {
 	sb.WriteString("- /validators - display all active validators and their missed blocks\n")
 	sb.WriteString("- /missing - display only validators missing blocks above threshold and their missing blocks\n")
 	sb.WriteString("Created by <a href=\"https://freak12techno.github.io\">freak12techno</a> at <a href=\"https://validator.solar\">SOLAR Labs</a> with ❤️.\n")
-	sb.WriteString("This bot is open-sourced, you can get the source code at https://github.com/solarlabsteam/missed-blocks-checker.\n\n")
-	sb.WriteString("We also maintain the following tools for Cosmos ecosystem:\n")
-	sb.WriteString("- <a href=\"https://github.com/solarlabsteam/cosmos-interacter\">cosmos-interacter</a> - a bot that can return info about Cosmos-based blockchain params.\n")
-	sb.WriteString("- <a href=\"https://github.com/solarlabsteam/cosmos-exporter\">cosmos-exporter</a> - scrape the blockchain data from the local node and export it to Prometheus\n")
-	sb.WriteString("- <a href=\"https://github.com/solarlabsteam/coingecko-exporter\">coingecko-exporter</a> - scrape the Coingecko exchange rate and export it to Prometheus\n")
-	sb.WriteString("- <a href=\"https://github.com/solarlabsteam/cosmos-transactions-bot\">cosmos-transactions-bot</a> - monitor the incoming transactions for a given filter\n\n")
-	sb.WriteString("If you like what we're doing, consider <a href=\"https://validator.solar\">staking with us</a>!\n")
+	sb.WriteString("Adapted to FunctionX ($FX) by <a href=\"https://twitter.com/FrenchXCore1\">FrenchXCore</a> with ❤️ too.\n")
+	sb.WriteString("This bot is open-sourced, you can get the source code at https://github.com/FrenchXCore/FxValidatorMonitor.\n\n")
+	sb.WriteString("If you like what we're doing, consider <a href=\"https://explorer.starscan.io/fxcore/validator/fxvaloper1z67rkadwrp2nf4zwxpktpqnw969plelyjj5alt\">staking with us</a>!\n")
 
 	r.sendMessage(message, sb.String())
 	r.Logger.Info().

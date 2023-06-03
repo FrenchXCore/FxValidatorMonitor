@@ -1,21 +1,26 @@
 # Bech prefixes for network.
-bech-prefix = "cosmos"
+bech-prefix = "fx"
+
 # If a network has specific bech prefixes for validator and for consensus node
 # and their pubkeys, it's possible to specify them separately.
-bech-validator-prefix = "cosmosvaloper"
-bech-validator-pubkey-prefix = "cosmosvaloperpub"
-bech-consensus-node-prefix = "cosmosvalcons"
-bech-consensus-node-pubkey-prefix = "cosmosvalconspub"
+bech-validator-prefix = "fxvaloper"
+bech-validator-pubkey-prefix = "fxvaloperpub"
+bech-consensus-node-prefix = "fxvalcons"
+bech-consensus-node-pubkey-prefix = "fxvalconspub"
+
 # Scrape interval, in seconds. Defaults to 120
 interval = 120
-# List of validators to monitor, with it specified, only the selected validators
+
+# List of validators to monitor. When specified, only the selected validators
 # will be monitored. Cannot be used together with exclude-validators.
 # If both include-validators and exclude-validators are not specified,
 # all validators will be monitored.
-include-validators = ["cosmosvaloperxxx"]
+#include-validators = ["cosmosvaloperxxx"]
+
 # List of validators to exclude from monitoring, with it specified, all validators except mentioned
 # will be monitored. Cannot be used together with include-validators.
-exclude-validators = ["cosmosvaloperyyy"]
+#exclude-validators = ["cosmosvaloperyyy"]
+
 # Some chains, likely cosmos-sdk, return signing-info without an address, making it impossible
 # to match some validators with their signing info, as a result, the validators list returned
 # by Telegram bot and the list of monitored validators isn't full. This flag, instead of querying
@@ -28,9 +33,9 @@ query-each-signing-info = false
 # Node config.
 [node]
 # gRPC node address to get signing info and validators info from, defaults to localhost:9090
-grpc-address = "localhost:9090"
+grpc-address = "mainnet-tm-fx.frenchxcore.eu:9090"
 # Tendermint RPC node to get block info from. Defaults to http://localhost:26657.
-rpc-address = "http://localhost:26657"
+rpc-address = "https://mainnet-tm-fx.frenchxcore.eu:26657"
 
 # Logging config.
 [log]
@@ -44,52 +49,87 @@ json = true
 # Chain info config.
 [chain-info]
 # Mintscan prefix, to generate links to validator.
-mintscan-prefix = "cosmos"
+mintscan-prefix = "fx"
 # A generic explorer validator page pattern. Should contain %s, which will be replaced
 # with validator's moniker, see example. Useful when a project isn't presented on Mintscan,
 # but has its own explorer instead. See the example below for Bitsong.
 # If provided, then mintscan-prefix is ignored.
-validator-page-pattern = "https://explorebitsong.com/validators/%s"
+validator-page-pattern = "https://explorer.starscan.io/fxcore/validator/%s"
+transaction-page-pattern = "https://explorer.starscan.io/fxcore/tx/0x%s"
+evm-transaction-page-pattern = "https://explorer.starscan.io/evm/tx/0x%s"
+proposal-page-pattern = "https://explorer.starscan.io/fxcore/proposals/%s"
+
+[governance]
+# True to monitor new proposal being submitted, false otherwise
+new-proposal = true
+# True to monitor proposal open for vote, false otherwise
+voting-opened = true
+# True to monitor if a new proposal reached quorum, false otherwise
+quorum-reached = true
+# True to monitor result of a proposal
+closed-proposal = true
+
+[validators]
+# True to monitor when a validator becomes active, false otherwise
+active = true
+# True to monitor when a validator becomes inactive, false otherwise
+inactive = true
+# True to monitor when a validator is jailed, false otherwise
+jailed = true
+# True to monitor when a validator is tombstoned, false otherwise
+tombstoned = true
+# True to monitor when the size of the list of active validators changes, false otherwise
+list-size = true
+# True to monitor when a validator self-stake changes, false otherwise
+self-stake = true
+# True to monitor when a validator votes, false otherwise
+new-vote = true
+# True to monitor when the delegations of a validator change, false otherwise
+delegation-change = true
+# When 'delegation-change' is true, minimum number of tokens to consider
+delegation-diff = 100000
+# True to monitor when the a validator's commission change, false otherwise
+commission-change = true
 
 # List of missed blocks groups.
-[[missed-blocks-groups]]
+#[[missed-blocks-groups]]
 # Start value of missed blocks. If a validator's missed blocks counter is between this
 # and end value, it will fall under this group.
-start = 0
+#start = 0
 # End value of missed blocks
-end = 999
+#end = 999
 # Emoji displayed when a validator enters this group.
-emoji-start = "🟡"
+#emoji-start = "🟡"
 # Emoji displayed when a validator leaves this group.
-emoji-end = "🟢"
+#emoji-end = "🟢"
 # Description displayed when a validator enters this group.
-desc-start = "is skipping blocks (0-10%)"
+#desc-start = "is skipping blocks (0-10%)"
 # Description displayed when a validator leaves this group.
-desc-end = "is recovered (<10%)"
+#desc-end = "is recovered (<10%)"
 
-[[missed-blocks-groups]]
-start = 1000
-end = 4999
-emoji-start = "🟠"
-emoji-end = "🟡"
-desc-start = "is skipping blocks (>10%)"
-desc-end = "is recovering (<50%)"
+#[[missed-blocks-groups]]
+#start = 1000
+#end = 4999
+#emoji-start = "🟠"
+#emoji-end = "🟡"
+#desc-start = "is skipping blocks (>10%)"
+#desc-end = "is recovering (<50%)"
 
-[[missed-blocks-groups]]
-start = 5000
-end = 8999
-emoji-start = "🔴"
-emoji-end = "🟠"
-desc-start = "is skipping blocks (>50%)"
-desc-end = "is recovering (<90%)"
+#[[missed-blocks-groups]]
+#start = 5000
+#end = 8999
+#emoji-start = "🔴"
+#emoji-end = "🟠"
+#desc-start = "is skipping blocks (>50%)"
+#desc-end = "is recovering (<90%)"
 
-[[missed-blocks-groups]]
-start = 9000
-end = 10000
-emoji-start = "🔴"
-emoji-end = "🟠"
-desc-start = "is skipping blocks (>90%)"
-desc-end = "is recovering (90-100%)"
+#[[missed-blocks-groups]]
+#start = 9000
+#end = 10000
+#emoji-start = "🔴"
+#emoji-end = "🟠"
+#desc-start = "is skipping blocks (>90%)"
+#desc-end = "is recovering (90-100%)"
 
 # Telegram reporter. All fields are mandatory, otherwise the reporter won't be enabled.
 [telegram]
@@ -101,8 +141,8 @@ chat = -123
 config-path = "/home/user/config/missed-blocks-checker-telegram-labels.toml"
 
 # Slack reporter. All fields are mandatory, otherwise the reporter won't be enabled.
-[slack]
+#[slack]
 # A Slack bot token.
-token = "xorb-xxxyyyy"
+#token = "xorb-xxxyyyy"
 # A Slack channel or username to send messages to.
-chat = "#general"
+#chat = "#general"
